@@ -1,0 +1,15 @@
+/* Renaming is not ok with undefined source channel 
+ * (B=Skip gets around parser limitation) */
+
+channels
+b: int
+
+process A =
+begin
+
+actions
+B = Skip
+
+@ B [[a <-b]]
+
+end

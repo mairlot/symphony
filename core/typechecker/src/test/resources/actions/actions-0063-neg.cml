@@ -1,0 +1,16 @@
+/* Renaming expressions are not ok with non-existent variables 
+ * (B=Skip gets around parser limitation) */
+
+channels
+a: int*int
+b: int 
+
+process A =
+begin
+
+actions
+B = Skip
+
+@ B [[a.x <- b ]]
+
+end

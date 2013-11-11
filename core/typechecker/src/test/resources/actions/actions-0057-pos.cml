@@ -1,0 +1,16 @@
+/* Renaming is ok with channels of matching residual types
+ * (B=Skip gets around parser limitation) */
+
+channels
+a: int*char
+b: char
+
+process A =
+begin
+
+actions
+B = Skip
+
+@ B [[a.1 <-b]]
+
+end

@@ -1,0 +1,20 @@
+/* Renaming expressions can use state variables in set comp
+ * (B=Skip gets around parser limitation) */
+
+channels
+a: int*int
+b: int 
+
+process A =
+begin
+
+state
+xs :set of int := {1,2,3,5}
+
+actions
+B = Skip
+
+@ B [[a.x <- b | x in set xs]]
+
+end
+

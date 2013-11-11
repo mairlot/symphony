@@ -1,0 +1,15 @@
+/* Renaming is ok with defined untyped channels
+ * (B=Skip gets around parser limitation) */
+
+channels
+a, b 
+
+process A =
+begin
+
+actions
+B = Skip
+
+@ B [[a <-b]]
+
+end

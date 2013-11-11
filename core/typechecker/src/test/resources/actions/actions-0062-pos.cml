@@ -1,0 +1,16 @@
+/* Renaming expressions can must add set comp to scope
+ * (B=Skip gets around parser limitation) */
+
+channels
+a: int*int
+b: int 
+
+process A =
+begin
+
+actions
+B = Skip
+
+@ B [[a.x <- b | x in set {1,2,3,4}]]
+
+end

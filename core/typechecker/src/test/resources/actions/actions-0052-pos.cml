@@ -1,0 +1,14 @@
+/* Renaming is ok with defined channels of the same type (B=Skip gets around parser limitation)*/
+channels
+a: int
+b: int
+
+process A =
+begin
+
+actions
+B = Skip
+
+@ B [[a <-b]]
+
+end

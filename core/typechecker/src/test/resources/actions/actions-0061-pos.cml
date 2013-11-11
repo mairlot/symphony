@@ -1,0 +1,19 @@
+/* Renaming expressions can depend on state
+ * (B=Skip gets around parser limitation) */
+
+channels
+a: int*int
+b: int 
+
+process A =
+begin
+
+state
+x : int
+
+actions
+B = Skip
+
+@ B [[a.x <- b]]
+
+end

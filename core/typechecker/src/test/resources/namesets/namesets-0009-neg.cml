@@ -1,0 +1,14 @@
+/* Namesets are not ok if they refer to nonexisting namesets */ 
+
+process A =
+begin
+
+
+namesets
+xs = ys
+
+@ Skip
+
+end
+
+

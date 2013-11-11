@@ -1,0 +1,20 @@
+/* Union is allowed for namesets */ 
+
+process A =
+begin
+
+
+state
+    x : int :=0
+    y : int :=0
+
+namesets
+xs = {x}
+ys = {y}
+uns = xs union empty
+
+@ Skip
+
+end
+
+

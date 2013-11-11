@@ -1,9 +1,11 @@
--- this should fail because operation names cannot be in namesets (see the cryptic action for the error at 8:11)
+-- namesets are not ok with operations 
 process A = 
 begin
   operations
     noop : () ==> ()
     noop() == return
-@ 
-  Skip [|{noop}|{}|{}|] Skip
+
+    namesets
+    ns={noop}
+@ Skip
 end

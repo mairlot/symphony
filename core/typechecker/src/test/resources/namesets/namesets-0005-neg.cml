@@ -1,0 +1,20 @@
+/* Namesets cannot have fat enums */
+
+process A =
+begin
+
+types
+    R :: a:int
+         b:int
+
+state
+    r : R :=mk_R(1,2)
+
+namesets
+x = {|r|}
+
+@ Skip
+
+end
+
+

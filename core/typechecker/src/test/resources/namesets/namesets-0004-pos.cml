@@ -1,0 +1,13 @@
+/* Namesets can be enpty */
+
+
+process A =
+begin
+
+namesets
+x = {}
+
+@ Skip
+
+end
+

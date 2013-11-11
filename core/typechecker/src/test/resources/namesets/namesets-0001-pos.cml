@@ -1,9 +1,14 @@
+/* Namesets are ok if variables exist */
+
 process A = 
 begin
   state
     i : int := 1
     j : int := 2
-@ 
-  i := 2 [|{i}|{}|{j}|] j := i + 2
+
+  namesets
+    ns = {i,j}
+
+@ Skip
   
 end

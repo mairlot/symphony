@@ -8,6 +8,8 @@ import org.overture.ast.analysis.AnalysisException;
 import org.overture.interpreter.values.UndefinedValue;
 import org.overture.interpreter.values.Value;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import eu.compassresearch.core.interpreter.CmlRuntime;
 import eu.compassresearch.core.interpreter.api.InterpreterRuntimeException;
 
@@ -21,7 +23,16 @@ public class ChannelNameValue extends Value
 
 	private final CMLChannelValue channel;
 	private final List<Value> values;
+//	@JsonIgnore
 	private final List<ValueConstraint> constraints;
+	
+	private ChannelNameValue()
+	{
+		// TODO Auto-generated constructor stub
+		channel = null;
+		values = null;
+		constraints = null;
+	}
 
 	public ChannelNameValue(CMLChannelValue channel, List<Value> values,
 			List<ValueConstraint> constraints)

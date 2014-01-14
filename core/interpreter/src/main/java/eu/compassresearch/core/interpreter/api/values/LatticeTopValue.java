@@ -3,6 +3,8 @@ package eu.compassresearch.core.interpreter.api.values;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.values.Value;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Represents any value of a specific type. This corresponds to the top element of the lattice where the possible values
  * of the type are in the middle and AnyValue are the top and Undefined are the bottom. E.g for the nat type:
@@ -20,7 +22,14 @@ public class LatticeTopValue extends Value implements LooseValue
 	// FIXME unicode seems to be causing problems on Windows and Mac
 	// private static final String topString = "\u22A4";
 	private static final String topString = "?";
+	
+	@JsonIgnore
 	private PType type;
+	
+	private LatticeTopValue()
+	{
+		// TODO Auto-generated constructor stub
+	}
 
 	public LatticeTopValue(PType type)
 	{

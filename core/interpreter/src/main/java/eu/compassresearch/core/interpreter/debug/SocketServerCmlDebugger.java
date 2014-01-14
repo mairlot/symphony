@@ -30,6 +30,7 @@ import eu.compassresearch.core.interpreter.api.SelectionStrategy;
 import eu.compassresearch.core.interpreter.api.events.CmlInterpreterStateObserver;
 import eu.compassresearch.core.interpreter.api.events.InterpreterStateChangedEvent;
 import eu.compassresearch.core.interpreter.debug.messaging.CmlRequest;
+import eu.compassresearch.core.interpreter.debug.messaging.Message;
 import eu.compassresearch.core.interpreter.debug.messaging.MessageCommunicator;
 import eu.compassresearch.core.interpreter.debug.messaging.MessageContainer;
 import eu.compassresearch.core.interpreter.debug.messaging.RequestMessage;
@@ -176,12 +177,25 @@ public class SocketServerCmlDebugger implements CmlDebugger,
 	{
 		CmlDbgStatusMessage dm = new CmlDbgStatusMessage(interpreterStatus);
 		CmlRuntime.logger().finest("Sending status message : " + dm.toString());
-		MessageCommunicator.sendMessage(requestOS, dm);
+		sendMessage(requestOS, dm);
+	}
+	
+	static void sendMessage(OutputStream requestOS, Message dm)
+	{
+		try
+		{
+			//FIXME errors should be handled instead of this
+			MessageCommunicator.sendMessage(requestOS, dm);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private ResponseMessage sendRequestSynchronous(RequestMessage message)
 	{
-		MessageCommunicator.sendMessage(requestOS, message);
+		sendMessage(requestOS, message);
 		ResponseMessage responseMessage = null;
 		try
 		{
@@ -195,10 +209,6 @@ public class SocketServerCmlDebugger implements CmlDebugger,
 		return responseMessage;
 	}
 
-	private void sendResponse(ResponseMessage message)
-	{
-		MessageCommunicator.sendMessage(requestOS, message);
-	}
 
 	/**
 	 * Receives a CML message. This is a blocking call
@@ -308,7 +318,7 @@ public class SocketServerCmlDebugger implements CmlDebugger,
 						}
 					}
 					ResponseMessage responseMessage = new ResponseMessage(message.getRequestId(), CmlRequest.GET_STACK_FRAMES, stackframes);
-					sendResponse(responseMessage);
+					sendMessage(requestOS,responseMessage);
 
 					return true;
 				}
@@ -336,7 +346,7 @@ public class SocketServerCmlDebugger implements CmlDebugger,
 					}
 
 					ResponseMessage responseMessage = new ResponseMessage(message.getRequestId(), CmlRequest.GET_CONTEXT_PROPERTIES, VariableDTO.extractVariables(contexts.get(level - 1)));
-					sendResponse(responseMessage);
+					sendMessage(requestOS, responseMessage);
 
 					return true;
 				}

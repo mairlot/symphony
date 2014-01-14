@@ -28,6 +28,12 @@ class ObservableLabelledTransition extends AbstractLabelledTransition implements
 	 * 
 	 */
 	private static final long serialVersionUID = -2217645151439301812L;
+	
+	
+	private ObservableLabelledTransition()
+	{
+		// TODO Auto-generated constructor stub
+	}
 
 	public ObservableLabelledTransition(CmlBehaviour source,
 			ChannelNameValue channelName)
@@ -96,7 +102,10 @@ class ObservableLabelledTransition extends AbstractLabelledTransition implements
 			SortedSet<CmlBehaviour> sources = new TreeSet<CmlBehaviour>();
 			sources.addAll(this.getEventSources());
 			sources.addAll(otherComEvent.getEventSources());
-			return new ObservableLabelledTransition(sources, meetValue);
+			ObservableLabelledTransition tmp = new ObservableLabelledTransition(sources, meetValue);
+			tmp.getEventSourcesHash().addAll(this.getEventSourcesHash());
+			tmp.getEventSourcesHash().addAll(otherComEvent.getEventSourcesHash());
+			return tmp;
 		} else
 		{
 			return null;

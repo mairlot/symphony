@@ -5,6 +5,8 @@ import java.util.TreeSet;
 
 import org.overture.interpreter.values.Value;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import eu.compassresearch.core.interpreter.api.values.ChannelNameSetValue;
 import eu.compassresearch.core.interpreter.api.values.ChannelNameValue;
 
@@ -24,7 +26,8 @@ public class CmlTransitionSet extends Value
 	// This contains the observable events
 	private final SortedSet<ObservableTransition> _observableEvents;
 	// This contains all the special events like tau
-	private final SortedSet<AbstractSilentTransition> silentEvents;
+	@JsonIgnore
+	private transient final SortedSet<AbstractSilentTransition> silentEvents;
 
 	public CmlTransitionSet()
 	{

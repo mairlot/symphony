@@ -7,6 +7,8 @@ import org.overture.ast.intf.lex.ILexNameToken;
 import org.overture.ast.types.PType;
 import org.overture.interpreter.values.Value;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import eu.compassresearch.ast.types.AChannelType;
 import eu.compassresearch.core.interpreter.api.CmlChannel;
 import eu.compassresearch.core.interpreter.api.events.ChannelActivity;
@@ -49,8 +51,13 @@ public class CMLChannelValue extends Value implements CmlChannel // CmlIOChannel
 	// new EventSourceHandler<ChannelObserver,CmlChannelEvent>(this, new ChannelEventMediator());
 	// private EventSourceHandler<ChannelObserver,CmlChannelEvent> writeObservers =
 	// new EventSourceHandler<ChannelObserver,CmlChannelEvent>(this, new ChannelEventMediator());
-
+@JsonIgnore
 	private EventSourceHandler<ChannelObserver, ChannelEvent> selectObservers = new EventSourceHandler<ChannelObserver, ChannelEvent>(this, new ChannelEventMediator());
+
+private CMLChannelValue()
+{
+	// TODO Auto-generated constructor stub
+}
 
 	public CMLChannelValue(AChannelType channelType, ILexNameToken name)
 	{

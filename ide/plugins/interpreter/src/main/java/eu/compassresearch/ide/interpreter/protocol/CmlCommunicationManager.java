@@ -17,6 +17,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.overture.ide.debug.core.dbgp.IDbgpProperty;
 import org.overture.ide.debug.core.dbgp.IDbgpStackLevel;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import eu.compassresearch.core.interpreter.api.CmlInterpreterState;
 import eu.compassresearch.core.interpreter.debug.Breakpoint;
 import eu.compassresearch.core.interpreter.debug.CmlDbgCommandMessage;
@@ -73,25 +76,28 @@ public class CmlCommunicationManager extends Thread
 	 * Sends a command to the running interpreter
 	 * 
 	 * @param cmd
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonGenerationException 
 	 */
-	public void sendCommandMessage(CmlDebugCommand cmd)
+	public void sendCommandMessage(CmlDebugCommand cmd) throws Exception
 	{
 		CmlDbgCommandMessage message = new CmlDbgCommandMessage(cmd);
 		MessageCommunicator.sendMessage(requestOutputStream, message);
 	}
 
-	public void sendCommandMessage(CmlDebugCommand cmd, Object content)
+	public void sendCommandMessage(CmlDebugCommand cmd, Object content) throws Exception
 	{
 		CmlDbgCommandMessage message = new CmlDbgCommandMessage(cmd, content);
 		MessageCommunicator.sendMessage(requestOutputStream, message);
 	}
 
-	public void sendMessage(Message message)
+	public void sendMessage(Message message) throws Exception
 	{
 		MessageCommunicator.sendMessage(requestOutputStream, message);
 	}
 
-	public ResponseMessage sendRequestSynchronous(RequestMessage message)
+	public ResponseMessage sendRequestSynchronous(RequestMessage message) throws Exception
 	{
 		MessageCommunicator.sendMessage(requestOutputStream, message);
 		ResponseMessage responseMessage = null;
@@ -280,7 +286,7 @@ public class CmlCommunicationManager extends Thread
 		return false;
 	}
 
-	public void terminate()
+	public void terminate() throws Exception
 	{
 		if (fRequestSocket != null)
 		{
@@ -292,7 +298,7 @@ public class CmlCommunicationManager extends Thread
 
 	}
 
-	public void disconnect()
+	public void disconnect() throws Exception
 	{
 		sendCommandMessage(CmlDebugCommand.DISCONNECT);
 	}
@@ -302,7 +308,7 @@ public class CmlCommunicationManager extends Thread
 		return (fRequestSocket == null ? false : !fRequestSocket.isClosed());
 	}
 
-	public void addBreakpoint(URI file, int linenumber, boolean enabled)
+	public void addBreakpoint(URI file, int linenumber, boolean enabled) throws Exception
 	{
 		if (enabled)
 		{
@@ -313,7 +319,7 @@ public class CmlCommunicationManager extends Thread
 		}
 	}
 
-	public void removeBreakpoint(URI file, int linenumber)
+	public void removeBreakpoint(URI file, int linenumber) throws Exception
 	{
 		Breakpoint cmlBP = new Breakpoint(System.identityHashCode(file.toString()
 				+ linenumber), file, linenumber);
@@ -321,7 +327,7 @@ public class CmlCommunicationManager extends Thread
 		this.sendCommandMessage(CmlDebugCommand.REMOVE_BREAKPOINT, cmlBP);
 	}
 
-	public void updateBreakpoint(URI file, int linenumber, boolean enabled)
+	public void updateBreakpoint(URI file, int linenumber, boolean enabled) throws Exception
 	{
 		if(enabled)
 			addBreakpoint(file, linenumber, enabled);
@@ -330,7 +336,7 @@ public class CmlCommunicationManager extends Thread
 		
 	}
 
-	public IDbgpStackLevel[] getStackLevels(CmlThread thread)
+	public IDbgpStackLevel[] getStackLevels(CmlThread thread) throws Exception
 	{
 		List<IDbgpStackLevel> levels = new Vector<IDbgpStackLevel>();
 
@@ -348,7 +354,7 @@ public class CmlCommunicationManager extends Thread
 
 
 	public IDbgpProperty[] getContextProperties(int threadId, int level,
-			int contextId2)
+			int contextId2) throws Exception
 	{
 
 		ResponseMessage rm = this.sendRequestSynchronous(new RequestMessage(CmlRequest.GET_CONTEXT_PROPERTIES, new int[] {

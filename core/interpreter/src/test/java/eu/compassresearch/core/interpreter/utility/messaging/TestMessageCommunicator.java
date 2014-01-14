@@ -245,6 +245,13 @@ public class TestMessageCommunicator
 						// TODO Auto-generated method stub
 						return 0;
 					}
+
+					@Override
+					public SortedSet<Integer> getEventSourcesHash()
+					{
+						// TODO Auto-generated method stub
+						return null;
+					}
 				});
 
 				return trace;
@@ -323,12 +330,12 @@ public class TestMessageCommunicator
 				return false;
 			}
 
-			@Override
-			public void updateName(ILexNameToken name)
-			{
-				// TODO Auto-generated method stub
-
-			}
+//			@Override
+//			public void updateName(ILexNameToken name)
+//			{
+//				// TODO Auto-generated method stub
+//
+//			}
 
 			@Override
 			public int compareTo(CmlBehaviour o)

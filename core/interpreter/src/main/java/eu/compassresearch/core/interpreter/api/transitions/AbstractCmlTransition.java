@@ -8,6 +8,8 @@ import java.util.TreeSet;
 
 import org.overture.ast.node.INode;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import eu.compassresearch.core.interpreter.api.behaviour.CmlBehaviour;
 
 abstract class AbstractCmlTransition implements CmlTransition
@@ -17,23 +19,46 @@ abstract class AbstractCmlTransition implements CmlTransition
 	 * 
 	 */
 	private static final long serialVersionUID = -5555627737673754975L;
-	final protected SortedSet<CmlBehaviour> eventSources;
+	@JsonIgnore
+	final transient protected SortedSet<CmlBehaviour> eventSources;
+	
+	final private SortedSet<Integer> eventSourcesHash;
+	
 	private final int transitionsId = transitionIdCounter++;
+	
+	protected AbstractCmlTransition()
+	{
+		eventSources = null;
+		eventSourcesHash = null;
+	}
 
 	public AbstractCmlTransition(CmlBehaviour eventSource)
 	{
 		this.eventSources = new TreeSet<CmlBehaviour>();
 		this.eventSources.add(eventSource);
+		this.eventSourcesHash = new TreeSet<Integer>();
+		this.eventSourcesHash.add(eventSource.hashCode());
 	}
 
 	public AbstractCmlTransition(SortedSet<CmlBehaviour> eventSources)
 	{
 		this.eventSources = eventSources;
+		this.eventSourcesHash = new TreeSet<Integer>();
+		for (CmlBehaviour cmlBehaviour : this.eventSources)
+		{
+			this.eventSourcesHash.add(cmlBehaviour.hashCode());
+		}
 	}
 
 	public SortedSet<CmlBehaviour> getEventSources()
 	{
 		return eventSources;
+	}
+	
+	@Override
+	public SortedSet<Integer> getEventSourcesHash()
+	{
+	return eventSourcesHash;
 	}
 
 	@Override

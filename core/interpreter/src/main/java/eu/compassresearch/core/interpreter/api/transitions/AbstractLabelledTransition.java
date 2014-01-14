@@ -3,6 +3,8 @@ package eu.compassresearch.core.interpreter.api.transitions;
 import java.util.List;
 import java.util.SortedSet;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import eu.compassresearch.core.interpreter.api.behaviour.CmlBehaviour;
 import eu.compassresearch.core.interpreter.api.values.ChannelNameValue;
 
@@ -19,7 +21,12 @@ abstract class AbstractLabelledTransition extends AbstractCmlTransition
 	 * 
 	 */
 	private static final long serialVersionUID = -1807730095394673285L;
-	final protected ChannelNameValue channelName;
+	final  protected ChannelNameValue channelName;
+	
+	protected AbstractLabelledTransition()
+	{
+		channelName = null;
+	}
 
 	public AbstractLabelledTransition(CmlBehaviour eventSource,
 			ChannelNameValue channelName)

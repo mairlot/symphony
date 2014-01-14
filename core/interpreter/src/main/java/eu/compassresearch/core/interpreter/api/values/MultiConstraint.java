@@ -10,6 +10,10 @@ public class MultiConstraint implements ValueConstraint
 {
 
 	List<ValueConstraint> constraints;
+	
+	private MultiConstraint()
+	{
+	}
 
 	public MultiConstraint(List<ValueConstraint> constraints)
 	{

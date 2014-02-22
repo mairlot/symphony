@@ -15,6 +15,7 @@ Import-Package: eu.compassresearch.ast.actions,
  eu.compassresearch.ast.program,
  eu.compassresearch.core.common,
  eu.compassresearch.core.typechecker.api,
+ eu.compassresearch.ide.core,
  eu.compassresearch.ide.core.resources,
  eu.compassresearch.ide.ui.utility,
  org.eclipse.core.commands,
@@ -33,7 +34,10 @@ Import-Package: eu.compassresearch.ast.actions,
  org.eclipse.ui.handlers,
  org.eclipse.ui.part,
  org.eclipse.ui.plugin,
- org.osgi.framework
+ org.osgi.framework,
+ org.overture.ast.analysis,
+ org.overture.ast.analysis.intf,
+ org.overture.ast.node
 Export-Package: eu.compassresearch.ide.c2c
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BuddyPolicy: registered

@@ -13,9 +13,18 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.overture.ast.node.INode;
 
 
 public abstract class C2CPluginUtils {
+	
+	/*public static CircModel generateCircus(List<INode> ast) throws AnalysisException{
+		CircModel r = new CircModel();
+		for (INode node : ast) {
+			r.addAll(node.apply(new CircusGenerator()));
+		}
+		return r;
+	}*/
 
 	public static void popErrorMessage(IWorkbenchWindow window, String message) {
 		MessageDialog.openError(window.getShell(), "Symphony C2C",

@@ -8,6 +8,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import eu.compassresearch.ide.core.resources.ICmlProject;
+import eu.compassresearch.ide.c2c.C2CRunner;
 import eu.compassresearch.ide.c2c.C2CPluginUtils;
 
 public class GenerateCircusHandler extends AbstractHandler {
@@ -28,10 +29,8 @@ public class GenerateCircusHandler extends AbstractHandler {
 		
 		ICmlProject cmlProj = (ICmlProject) proj.getAdapter(ICmlProject.class);
 		
-		/*
-		PogPluginRunner doer = new PogPluginRunner(window, HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().getActivePart().getSite(), cmlProj);
-		doer.runPog();
-		*/
+		C2CRunner doer = new C2CRunner(window, HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().getActivePart().getSite(), cmlProj);
+		doer.runC2C();
 
 		return null;
 	}

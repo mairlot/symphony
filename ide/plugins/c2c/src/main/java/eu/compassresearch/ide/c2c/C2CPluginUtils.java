@@ -30,6 +30,10 @@ public abstract class C2CPluginUtils {
 		MessageDialog.openError(window.getShell(), "Symphony C2C",
 				"Could not generate Circus.\n\n" + message);
 	}
+	
+	public static void popInformationMessage(IWorkbenchWindow window, String message) {
+		MessageDialog.openInformation(window.getShell(), "Symphony C2C", message);
+	}
 
 	public static IProject getCurrentlySelectedProject() {
 

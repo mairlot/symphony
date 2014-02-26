@@ -28,37 +28,26 @@ public class C2CRunner {
 			C2CPluginUtils.popErrorMessage(window, "Errors in model.");
 		}
 		
+		File circusFile = createCircusFile();
+		
 		final ICmlModel model = cmlProj.getModel();
 		
-		List<INode> ast = model.getAst();
+		//List<INode> ast = model.getAst();
 	
 		//Class<?> c = ast.getClass();
 		
-		/*try{
-			PrintWriter out = new PrintWriter("astlog.txt");
-			
-			for(int i = 0; i <= ast.size(); i++){
-				out.print("Number " + i + ": \n" + ast.get(i).toString() + "\n");
-			}
-			
-			out.print("BREAK - BREAK");
-			out.print("Length of AST:");
-			out.print(ast.size());
-			C2CPluginUtils.popErrorMessage(window, String.valueOf(ast.size()));
-			
-			out.close();
-		} catch(FileNotFoundException e){
-			C2CPluginUtils.popErrorMessage(window, "astlog.txt not found.");
-		} catch(ArrayIndexOutOfBoundsException e){
-		}
-		*/
+		//C2CPluginUtils.popErrorMessage(window, "Error: " + System.getProperty("java.class.path"));
 		
 	
 		ICircusList circList = genCircus(model);	
 		
 		if(!circList.isEmpty()){
-			createCircusFile(circList);
+			C2CPluginUtils.popInformationMessage(window, "About to create Circus file.");
+			writeToCircusFile(circList,circusFile);
 		}
+		
+		endCircusFile(circusFile);
+		C2CPluginUtils.popInformationMessage(window, "Plugin execution completed.");
 	}
 	
 	public ICircusList genCircus(ICmlModel model){
@@ -74,7 +63,24 @@ public class C2CRunner {
 		}
 	}
 	
-	public void createCircusFile(ICircusList cList){
+	public void writeToCircusFile(ICircusList cList, File file){
+		try {
+			FileWriter writer = new FileWriter(file);
+			int i = 0;
+			while(i < cList.size()){
+				writer.write(cList.get(i));
+				writer.write("\n");
+				i++;
+			}
+			writer.close();
+		} catch (IOException e) {
+			C2CPluginUtils.popErrorMessage(window,  "Error: The Circus FileWriter has malfunctioned.");
+			e.printStackTrace();
+		}
+	}
+	
+	public File createCircusFile(){
+		C2CPluginUtils.popInformationMessage(window, "Creating file...");
 		String workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
 		File circus = new File(workspacePath.concat("circusfinal.txt"));
 		try {
@@ -87,24 +93,29 @@ public class C2CRunner {
 			C2CPluginUtils.popErrorMessage(window,"Error: The Circus file cannot be written to.");
 			circus.setWritable(true);	
 		} else {
-			FileWriter writer;
-			try {
-				writer = new FileWriter(circus);
-				int i = 0;
-				while(i < cList.size()){
-					writer.write(cList.get(i));
-					i++;
-				}
-			} catch (IOException e) {
-				C2CPluginUtils.popErrorMessage(window,  "Error: The Circus FileWriter has malfunctioned.");
-				e.printStackTrace();
+			try{
+				FileWriter creator = new FileWriter(circus);
+				creator.write("\\begin{circus} \n");
+				creator.close();
+			} catch(IOException e){
+				C2CPluginUtils.popErrorMessage(window, "Unable to beign Circus File.");
 			}
 			
+			
 		}
-		
+		C2CPluginUtils.popInformationMessage(window, "File completed.");
+		return circus;
 	}
 		
-	
+	public void endCircusFile(File file){
+		try{
+			FileWriter writer = new FileWriter(file);
+			writer.write("\\end{circus}");
+			writer.close();
+		} catch(IOException e){
+			C2CPluginUtils.popErrorMessage(window, "Unable to end Circus File.");
+		}
+	}
 	
 	public C2CRunner(IWorkbenchWindow window, IWorkbenchSite site,
 			ICmlProject cmlproj) {

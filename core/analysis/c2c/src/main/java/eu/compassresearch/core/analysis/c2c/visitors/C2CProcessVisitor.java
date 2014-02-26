@@ -1,6 +1,9 @@
 package eu.compassresearch.core.analysis.c2c.visitors;
 
+import java.util.LinkedList;
+
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.node.INode;
 
 import eu.compassresearch.ast.actions.PAction;
@@ -8,7 +11,6 @@ import eu.compassresearch.ast.analysis.AnswerCMLAdaptor;
 import eu.compassresearch.ast.process.AActionProcess;
 import eu.compassresearch.ast.process.PProcess;
 import eu.compassresearch.core.analysis.c2c.CircusList;
-import eu.compassresearch.core.analysis.c2c.ICircusList;
 
 public class C2CProcessVisitor extends AnswerCMLAdaptor<CircusList> {
 	
@@ -20,7 +22,7 @@ public class C2CProcessVisitor extends AnswerCMLAdaptor<CircusList> {
 
 	@Override
 	public CircusList defaultPProcess(PProcess node) throws AnalysisException{
-		CircusList c = new CircusList();
+		CircusList  c = new CircusList();
 		return c;
 	}
 	
@@ -29,10 +31,11 @@ public class C2CProcessVisitor extends AnswerCMLAdaptor<CircusList> {
 		CircusList c = new CircusList();
 		
 		//get subparts
-		//LinkedList<PDefinition> pdef = node.getActionDefinition().getDefinitions();
+		LinkedList<PDefinition> pdef = node.getActionDefinition().getDefinitions();
+		c.add(pdef.toString() + "\\\\");
 		PAction action = node.getAction();
 		c.addAll(action.apply(parentC2C));
-		
+		c.add("\\circspot " + node.getActionDefinition().getName() + "\\\\");
 		return c;
 	}
 	

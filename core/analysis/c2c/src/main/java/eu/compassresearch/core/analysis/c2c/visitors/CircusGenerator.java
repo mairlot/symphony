@@ -40,6 +40,11 @@ public class CircusGenerator extends AnswerCMLAdaptor<CircusList> {
 		actionVisitor = new C2CActionVisitor(this);
 	}
 	
+	//Duplicated main overture handlers. Necessary for now since we don't want to switch visitor context at the root level
+	public CircusGenerator(){
+		this.initialize();
+	}
+	
 	@Override
 	public CircusList defaultPDefinition(PDefinition node) throws AnalysisException {
 		return node.apply(this.declAndDefVisitor);

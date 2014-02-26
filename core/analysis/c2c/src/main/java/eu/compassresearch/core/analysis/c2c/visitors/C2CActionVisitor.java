@@ -4,6 +4,7 @@ import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.node.INode;
 
 import eu.compassresearch.core.analysis.c2c.CircusList;
+import eu.compassresearch.ast.actions.ASkipAction;
 import eu.compassresearch.ast.actions.PAction;
 import eu.compassresearch.ast.analysis.AnswerCMLAdaptor;
 
@@ -32,6 +33,14 @@ public class C2CActionVisitor extends AnswerCMLAdaptor<CircusList> {
 	public CircusList defaultINode(INode node) throws AnalysisException{
 		CircusList c = new CircusList();
 		c.addAll(node.apply(parentC2C));
+		return c;
+	}
+	
+	@Override
+	public CircusList caseASkipAction(ASkipAction node) throws AnalysisException{
+		CircusList c = new CircusList();
+		//c.add(node.toString());
+		c.add("\\Skip");
 		return c;
 	}
 

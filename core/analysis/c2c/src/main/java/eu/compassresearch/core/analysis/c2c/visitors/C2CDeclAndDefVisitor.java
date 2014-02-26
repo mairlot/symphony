@@ -6,6 +6,8 @@ import org.overture.ast.node.INode;
 import eu.compassresearch.ast.analysis.AnswerCMLAdaptor;
 import eu.compassresearch.ast.definitions.AChannelDefinition;
 import eu.compassresearch.ast.definitions.AChansetDefinition;
+import eu.compassresearch.ast.definitions.AProcessDefinition;
+import eu.compassresearch.ast.process.PProcess;
 import eu.compassresearch.core.analysis.c2c.CircusList;
 import eu.compassresearch.core.analysis.c2c.ICircusList;
 
@@ -15,6 +17,18 @@ public class C2CDeclAndDefVisitor extends AnswerCMLAdaptor<CircusList> {
 	
 	public C2CDeclAndDefVisitor(AnswerCMLAdaptor<CircusList> parent){
 		this.parentC2C = parent;
+	}
+	
+	@Override
+	public CircusList caseAProcessDefinition(AProcessDefinition node) throws AnalysisException{
+		CircusList c = new CircusList();
+		c.add("\\circprocess\\ " + node.getName() + " \\circdef \\circbegin \\\\ ");
+		
+		PProcess  process = node.getProcess();
+		process.apply(this.parentC2C);
+		
+		c.add("\\circend ");
+		return c;
 	}
 	
 	/**

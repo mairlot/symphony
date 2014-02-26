@@ -58,10 +58,12 @@ Import-Package: eu.compassresearch.ast.actions,
  org.overture.pog.visitors,
  org.overture.typechecker,
  org.overture.typechecker.assistant.definition,
- org.overture.typechecker.assistant.type
-Export-Package: eu.compassresearch.core.analysis.pog.obligations,eu.co
- mpassresearch.core.analysis.pog.utility, eu.compassresearch.ide.pog,e
- u.compassresearch.ide.pog.view
+ org.overture.typechecker.assistant.type,
+ org.overture.typechecker.assistant
+Export-Package: eu.compassresearch.core.analysis.pog.obligations,
+ eu.compassresearch.core.analysis.pog.utility, 
+ eu.compassresearch.ide.pog,
+ eu.compassresearch.ide.pog.view
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BuddyPolicy: registered
 Eclipse-BundleShape: dir

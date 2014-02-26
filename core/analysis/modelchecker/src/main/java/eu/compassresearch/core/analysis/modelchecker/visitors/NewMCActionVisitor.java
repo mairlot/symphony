@@ -63,7 +63,6 @@ import eu.compassresearch.core.analysis.modelchecker.ast.actions.MCAInterruptAct
 import eu.compassresearch.core.analysis.modelchecker.ast.actions.MCAReferenceAction;
 import eu.compassresearch.core.analysis.modelchecker.ast.actions.MCASequentialCompositionAction;
 import eu.compassresearch.core.analysis.modelchecker.ast.actions.MCASequentialCompositionReplicatedAction;
-import eu.compassresearch.core.analysis.modelchecker.ast.actions.MCASingleGeneralAssignmentStatementAction;
 import eu.compassresearch.core.analysis.modelchecker.ast.actions.MCASkipAction;
 import eu.compassresearch.core.analysis.modelchecker.ast.actions.MCAStmAction;
 import eu.compassresearch.core.analysis.modelchecker.ast.actions.MCAStopAction;
@@ -407,7 +406,7 @@ public class NewMCActionVisitor extends
 		MCACommunicationAction result = new MCACommunicationAction(identifier, mcParameters, action);
 		
 		//fr the moment iocomm do not depend on channel. This means that formula wont instantiate communicated values
-		MCIOCommDef ioCommDef = new MCIOCommDef(result.getCounterId(), result, null);
+		MCIOCommDef ioCommDef = new MCIOCommDef(result.getCounterId(), result);
 
 		question.ioCommDefs.add(ioCommDef);
 		

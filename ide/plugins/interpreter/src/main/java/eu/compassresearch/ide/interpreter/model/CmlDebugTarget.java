@@ -53,14 +53,17 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 	CmlThreadManager threadManager;
 	CmlInterpreterStateDTO lastState = null;
 	private boolean suspendedForSelection;
+	private boolean expectConsoleRead;
+	private final boolean autoTerminate;
 
 	public CmlDebugTarget(ILaunch launch, IProcess process,
-			ICmlProject project, int communicationPort) throws CoreException,
+			ICmlProject project, int communicationPort, boolean autoTerminate) throws CoreException,
 			IOException
 	{
 		this.launch = launch;
 		this.process = process;
 		this.project = project;
+		this.autoTerminate = autoTerminate;
 
 		threadManager = new CmlThreadManager(this);
 		communicationManager = new CmlCommunicationManager(this, threadManager, initializeRequestHandlers(), initializeStatusHandlers(), communicationPort);
@@ -128,6 +131,8 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 	private Map<String, MessageEventHandler<CmlDbgStatusMessage>> initializeStatusHandlers()
 	{
 		final Map<String, MessageEventHandler<CmlDbgStatusMessage>> handlers = new HashMap<String, MessageEventHandler<CmlDbgStatusMessage>>();
+		final Boolean CONTINUE_PROCESSING = true;
+		final Boolean STOP_PROCESSING_AND_TERMINATE = true;
 
 		handlers.put(CmlInterpreterState.INITIALIZED.toString(), new MessageEventHandler<CmlDbgStatusMessage>()
 		{
@@ -145,7 +150,7 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 				// CmlUtil.clearAllSelections();
 				// }
 				// });
-				return true;
+				return CONTINUE_PROCESSING;
 			}
 		});
 
@@ -155,7 +160,9 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 			public boolean handleMessage(CmlDbgStatusMessage message)
 			{
 				lastState = message.getInterpreterStatus();
-				return true;
+				suspendedForSelection = false;
+				expectConsoleRead = false;
+				return CONTINUE_PROCESSING;
 			}
 		});
 
@@ -187,7 +194,7 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 				setupThreads.setSystem(true);
 				setupThreads.schedule();
 
-				return true;
+				return CONTINUE_PROCESSING;
 			}
 		});
 
@@ -229,7 +236,7 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 					}
 				});
 
-				return true;
+				return CONTINUE_PROCESSING;
 			}
 		});
 
@@ -239,7 +246,7 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 			public boolean handleMessage(CmlDbgStatusMessage message)
 			{
 				lastState = message.getInterpreterStatus();
-				return false;
+				return STOP_PROCESSING_AND_TERMINATE;
 			}
 		});
 
@@ -249,7 +256,7 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 			public boolean handleMessage(CmlDbgStatusMessage message)
 			{
 				lastState = message.getInterpreterStatus();
-				return false;
+				return STOP_PROCESSING_AND_TERMINATE;
 			}
 		});
 
@@ -260,7 +267,7 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 			{
 				lastState = message.getInterpreterStatus();
 				handlers.get(CmlInterpreterState.SUSPENDED.toString()).handleMessage(message);
-				return true;
+				return CONTINUE_PROCESSING;
 			}
 		});
 
@@ -270,7 +277,7 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 			public boolean handleMessage(CmlDbgStatusMessage message)
 			{
 				lastState = message.getInterpreterStatus();
-				return false;
+				return STOP_PROCESSING_AND_TERMINATE;
 			}
 		});
 
@@ -321,7 +328,7 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 				// Debugging process is not answering, so terminating it
 				if (p != null && p.canTerminate())
 				{
-					p.terminate();
+					// p.terminate();
 				}
 			}
 		}
@@ -385,12 +392,13 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 		fireResumeEvent(0);
 	}
 
-	public void select(TransitionDTO choice)
+	public void select(TransitionDTO choice, boolean expectConsoleRead)
 	{
 		try
 		{
 			this.communicationManager.sendMessage(new CmlDbgCommandMessage(CmlDebugCommand.SET_CHOICE, choice));
-			this.suspendedForSelection = false;
+			this.suspendedForSelection = expectConsoleRead;
+			this.expectConsoleRead = expectConsoleRead;
 		} catch (Exception e)
 		{
 			// TODO Auto-generated catch block
@@ -579,15 +587,15 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 		// take the process down
 		final IProcess p = getProcess();
 		// Debugging process is not answering, so terminating it
-		if (p != null && p.canTerminate())
+		if (p != null && p.canTerminate() && autoTerminate)
 		{
-			try
-			{
-				p.terminate();
-			} catch (DebugException e)
-			{
-				CmlDebugPlugin.logError("Failed to take down the interpreter process", e);
-			}
+			 try
+			 {
+			 p.terminate();
+			 } catch (DebugException e)
+			 {
+			 CmlDebugPlugin.logError("Failed to take down the interpreter process", e);
+			 }
 		}
 	}
 
@@ -600,6 +608,11 @@ public class CmlDebugTarget extends CmlDebugElement implements IDebugTarget
 	public CmlInterpreterStateDTO getLastState()
 	{
 		return lastState;
+	}
+
+	public boolean isSuspendedForConsoleRead()
+	{
+		return expectConsoleRead;
 	}
 
 }

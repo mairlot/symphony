@@ -1,7 +1,7 @@
 channels 
-a
+a:int
 
 process A = 
 begin 
-	@ (dcl x : int @ x := 0;Skip)
+	@ a?x -> Skip
 end

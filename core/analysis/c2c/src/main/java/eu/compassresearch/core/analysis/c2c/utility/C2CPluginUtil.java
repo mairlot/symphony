@@ -12,9 +12,11 @@ import eu.compassresearch.core.analysis.c2c.visitors.CircusGenerator;
 public class C2CPluginUtil {
 	
 	public static ICircusList generateCircus(List<INode> ast) throws AnalysisException {
-		ICircusList r = new CircusList();
+		CircusList r = new CircusList();
+		CircusGenerator gen = new CircusGenerator();
 		for (INode node : ast) {
-			r.addAll(node.apply(new CircusGenerator()));
+			ICircusList aux = node.apply(gen);
+			r.addAll(aux);
 		}
 		return r;
 	}

@@ -31,11 +31,9 @@ public class C2CProcessVisitor extends AnswerCMLAdaptor<CircusList> {
 		CircusList c = new CircusList();
 		
 		//get subparts
-		LinkedList<PDefinition> pdef = node.getActionDefinition().getDefinitions();
-		c.add(pdef.toString() + "\\\\");
 		PAction action = node.getAction();
 		c.addAll(action.apply(parentC2C));
-		c.add("\\circspot " + node.getActionDefinition().getName() + "\\\\");
+		c.add("\\circspot " + node.getActionDefinition().getName().toString() + " \\\\");
 		return c;
 	}
 	

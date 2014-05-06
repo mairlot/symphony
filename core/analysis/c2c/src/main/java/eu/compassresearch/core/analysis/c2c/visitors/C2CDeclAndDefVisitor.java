@@ -22,9 +22,9 @@ public class C2CDeclAndDefVisitor extends AnswerCMLAdaptor<CircusList> {
 	@Override
 	public CircusList caseAProcessDefinition(AProcessDefinition node) throws AnalysisException{
 		CircusList c = new CircusList();
-		c.add("\\circprocess\\ " + node.getName() + " \\circdef \\circbegin \\\\ ");
+		c.add("\\circprocess\\ " + node.getName().toString() + " \\circdef \\circbegin \\\\ ");
 		
-		PProcess  process = node.getProcess();
+		PProcess process = node.getProcess();
 		process.apply(this.parentC2C);
 		
 		c.add("\\circend ");
@@ -37,6 +37,7 @@ public class C2CDeclAndDefVisitor extends AnswerCMLAdaptor<CircusList> {
 	@Override
 	public CircusList caseAChannelDefinition(AChannelDefinition node) throws AnalysisException{
 		CircusList c = new CircusList();
+		c.add("\\circchannel " + node.getName().toString() + ":" + node.getType().toString());
 		return c;
 	}
 	
@@ -46,6 +47,7 @@ public class C2CDeclAndDefVisitor extends AnswerCMLAdaptor<CircusList> {
 	@Override
 	public CircusList caseAChansetDefinition(AChansetDefinition node) throws AnalysisException {
 		CircusList c = new CircusList();
+		c.add("\\circchannelset\\ " + node.getIdentifier().getName().toString() + " == \\lchanset " + node.getChansetExpression().toString() + " \\rchanset");
 		return c;
 	}
 

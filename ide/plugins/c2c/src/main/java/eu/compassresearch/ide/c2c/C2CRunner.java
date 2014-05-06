@@ -5,7 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.overture.ast.node.INode;
@@ -13,7 +16,6 @@ import org.overture.ast.node.INode;
 import eu.compassresearch.ide.core.resources.ICmlModel;
 import eu.compassresearch.ide.core.resources.ICmlProject;
 import eu.compassresearch.ide.ui.utility.CmlProjectUtil;
-import eu.compassresearch.core.analysis.c2c.ICircusList;
 import eu.compassresearch.core.analysis.c2c.CircusList;
 import eu.compassresearch.core.analysis.c2c.utility.C2CPluginUtil;
 
@@ -39,19 +41,24 @@ public class C2CRunner {
 		//C2CPluginUtils.popErrorMessage(window, "Error: " + System.getProperty("java.class.path"));
 		
 	
-		ICircusList circList = genCircus(model);	
+		CircusList circList = genCircus(model);	
 		
 		if(!circList.isEmpty()){
 			C2CPluginUtils.popInformationMessage(window, "About to create Circus file.");
+			circList.add("End");
+			C2CPluginUtils.popInformationMessage(window, "cList contains: " + circList.get(0));
 			writeToCircusFile(circList,circusFile);
+		}
+		else {
+			C2CPluginUtils.popErrorMessage(window, "CircusList is empty! :(");
 		}
 		
 		endCircusFile(circusFile);
 		C2CPluginUtils.popInformationMessage(window, "Plugin execution completed.");
 	}
 	
-	public ICircusList genCircus(ICmlModel model){
-		ICircusList circList = new CircusList();
+	public CircusList genCircus(ICmlModel model){
+		CircusList circList = new CircusList();
 		
 		try{
 			circList = C2CPluginUtil.generateCircus(model.getAst());
@@ -63,12 +70,16 @@ public class C2CRunner {
 		}
 	}
 	
-	public void writeToCircusFile(ICircusList cList, File file){
+	public void writeToCircusFile(CircusList cList, File file){ 
 		try {
-			FileWriter writer = new FileWriter(file);
+			FileWriter writer = new FileWriter(file, true);
 			int i = 0;
-			while(i < cList.size()){
-				writer.write(cList.get(i));
+			if(cList == null) {
+				C2CPluginUtils.popErrorMessage(window, "cList is null");
+			}
+			while(i <= cList.size()){
+				C2CPluginUtils.popInformationMessage(window, "Circus Line: \n " + cList.get(i).toString());
+				writer.write(cList.get(i).toString());
 				writer.write("\n");
 				i++;
 			}
@@ -80,17 +91,20 @@ public class C2CRunner {
 	}
 	
 	public File createCircusFile(){
-		C2CPluginUtils.popInformationMessage(window, "Creating file...");
-		String workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
-		File circus = new File(workspacePath.concat("circusfinal.txt"));
-		try {
-			circus.createNewFile();
-		} catch (IOException e) {
-			C2CPluginUtils.popErrorMessage(window,"Error: The Circus file could not be created.");
-			e.printStackTrace();
+		String projectPath = C2CPluginUtils.getCurrentlySelectedProject().getLocation().toString();
+		
+		IProject project = C2CPluginUtils.getCurrentlySelectedProject();
+		IFolder folder = project.getFolder("gen");
+		if (!folder.exists()) {
+			try {
+				folder.create(false,  true,  null);
+			} catch (CoreException e1) {
+				C2CPluginUtils.popErrorMessage(window, "Error: Folder \"translated\" could not be created.");
+			}
 		}
+		File circus = new File(projectPath.concat("/translated/"+project.getName()+".tex"));
 		if(!circus.canWrite()){
-			C2CPluginUtils.popErrorMessage(window,"Error: The Circus file cannot be written to.");
+			C2CPluginUtils.popErrorMessage(window, "Error: The Circus file cannot be written to.");
 			circus.setWritable(true);	
 		} else {
 			try{
@@ -98,19 +112,18 @@ public class C2CRunner {
 				creator.write("\\begin{circus} \n");
 				creator.close();
 			} catch(IOException e){
-				C2CPluginUtils.popErrorMessage(window, "Unable to beign Circus File.");
+				C2CPluginUtils.popErrorMessage(window, "Unable to begin Circus File.");
 			}
-			
-			
+	
 		}
-		C2CPluginUtils.popInformationMessage(window, "File completed.");
+		C2CPluginUtils.popInformationMessage(window, "File creation completed.");
 		return circus;
 	}
 		
 	public void endCircusFile(File file){
 		try{
-			FileWriter writer = new FileWriter(file);
-			writer.write("\\end{circus}");
+			FileWriter writer = new FileWriter(file, true);
+			writer.write("\n\\end{circus}");
 			writer.close();
 		} catch(IOException e){
 			C2CPluginUtils.popErrorMessage(window, "Unable to end Circus File.");

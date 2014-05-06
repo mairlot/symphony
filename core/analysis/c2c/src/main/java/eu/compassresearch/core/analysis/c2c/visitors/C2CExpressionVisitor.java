@@ -26,6 +26,7 @@ public class C2CExpressionVisitor extends AnswerCMLAdaptor<CircusList> {
 	public CircusList defaultINode(INode node) throws AnalysisException {
 		CircusList c = new CircusList();
 		c.addAll(node.apply(parentC2C));
+		
 		return c;
 	}
 
